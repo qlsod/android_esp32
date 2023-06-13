@@ -16,12 +16,14 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,13 +48,14 @@ public class MainActivity extends AppCompatActivity {
 
     // GUI Components
     private TextView mBluetoothStatus;
-    private TextView mReadBuffer;
+    private TextView mReadBuffer, mLedStateMssage;
     private Button mScanBtn;
     private Button mOffBtn;
     private Button mListPairedDevicesBtn;
     private Button mDiscoverBtn;
     private ListView mDevicesListView;
-    private CheckBox mLED1;
+    private CheckBox mLED1, mLED2;
+    private EditText mSec;
 
     private BluetoothAdapter mBTAdapter;
     private Set<BluetoothDevice> mPairedDevices;
@@ -73,7 +76,13 @@ public class MainActivity extends AppCompatActivity {
         mOffBtn = (Button)findViewById(R.id.off);
         mDiscoverBtn = (Button)findViewById(R.id.discover);
         mListPairedDevicesBtn = (Button)findViewById(R.id.paired_btn);
+        mLedStateMssage = (TextView)findViewById(R.id.connect_message);
         mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
+        mLED2 = (CheckBox)findViewById(R.id.checkbox_led_2);
+        mSec = (EditText)findViewById(R.id.led_sec);
+
+        // EditText에 숫자만 입력가능하도록 조정
+        mSec.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
 
         mBTArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // get a handle on the bluetooth radio
@@ -113,13 +122,33 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
 
+            // LED 조정 버튼 클릭 시
             mLED1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    if(mConnectedThread != null) //First check to make sure thread created
+                    if (mLED1.isChecked()) {
                         mConnectedThread.write("1");
+                        mLedStateMssage.setText("LED가 켜졌습니다");
+
+                    } else {
+                        mConnectedThread.write("0");
+                        mLedStateMssage.setText("LED가 꺼졌습니다");
+                    }
                 }
             });
+
+            // 예약 버튼 클릭 시
+            mLED2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mLED2.isChecked()) {
+                        String led_sec = mSec.getText().toString();
+                        mConnectedThread.write(led_sec);
+                    }
+                }
+            });
+
+
 
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {

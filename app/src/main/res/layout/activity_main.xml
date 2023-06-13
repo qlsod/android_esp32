@@ -14,13 +14,46 @@
         android:id="@+id/checkbox_led_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:checked="false"
-        android:scaleX="1.7"
-        android:scaleY="1.7"
-        android:text="Toggle LED"
+        android:textSize="25sp"
+        android:text="LED Control"
         android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/checkbox_led_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:checked="false"
+        android:text="예약하기"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/led_sec"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="22"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="초 후 LED OFF"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,31 +106,65 @@
 
     <Button
         android:id="@+id/scan"
+        style="@android:style/Widget.Button.Inset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Bluetooth ON" />
 
     <Button
         android:id="@+id/off"
+        style="@android:style/Widget.Button.Inset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Bluetooth OFF" />
 
     <Button
         android:id="@+id/paired_btn"
+        style="@android:style/Widget.Button.Inset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Show paired Devices" />
 
     <Button
         android:id="@+id/discover"
+        style="@android:style/Widget.Button.Inset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Discover New Devices" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="0.1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="Message:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/connect_message"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="0.9"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center"
+            android:text="LED 상내 메시지" />
+    </LinearLayout>
+
     <ListView
+        android:layout_marginTop="10dp"
         android:id="@+id/devices_list_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="330dp"
         android:choiceMode="singleChoice" />
+
+
+
 </LinearLayout>
