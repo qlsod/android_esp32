@@ -1,6 +1,7 @@
 package com.mcuhq.simplebluetooth;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -10,13 +11,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
     // GUI Components
     private TextView mBluetoothStatus;
-    private TextView mReadBuffer, mLedStateMssage;
+    private TextView mReadBuffer, ledStateMessage, mReceive;
     private Button mScanBtn;
     private Button mOffBtn;
     private Button mListPairedDevicesBtn;
-    private Button mDiscoverBtn;
+    private Button mDiscoverBtn, mLED2;
     private ListView mDevicesListView;
-    private CheckBox mLED1, mLED2;
-    private EditText mSec;
+    private CheckBox mLED1;
+    private EditText mLedSec;
 
     private BluetoothAdapter mBTAdapter;
     private Set<BluetoothDevice> mPairedDevices;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private ConnectedThread mConnectedThread; // bluetooth background worker thread to send and receive data
     private BluetoothSocket mBTSocket = null; // bi-directional client-to-client data path
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,13 +78,11 @@ public class MainActivity extends AppCompatActivity {
         mOffBtn = (Button)findViewById(R.id.off);
         mDiscoverBtn = (Button)findViewById(R.id.discover);
         mListPairedDevicesBtn = (Button)findViewById(R.id.paired_btn);
-        mLedStateMssage = (TextView)findViewById(R.id.connect_message);
         mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
-        mLED2 = (CheckBox)findViewById(R.id.checkbox_led_2);
-        mSec = (EditText)findViewById(R.id.led_sec);
-
-        // EditText에 숫자만 입력가능하도록 조정
-        mSec.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+        mLED2 = (Button)findViewById(R.id.btn_led_2);
+        mLedSec = (EditText)findViewById(R.id.led_sec);
+        ledStateMessage = (TextView)findViewById(R.id.connect_message);
+        mReceive = (TextView)findViewById(R.id.receivedMessage);
 
         mBTArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // get a handle on the bluetooth radio
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                     String readMessage = null;
                     readMessage = new String((byte[]) msg.obj, StandardCharsets.UTF_8);
                     mReadBuffer.setText(readMessage);
+                    mReceive.setText(readMessage);
                 }
 
                 if(msg.what == CONNECTING_STATUS){
@@ -122,33 +123,59 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
 
-            // LED 조정 버튼 클릭 시
             mLED1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     if (mLED1.isChecked()) {
-                        mConnectedThread.write("1");
-                        mLedStateMssage.setText("LED가 켜졌습니다");
-
+                        if (mConnectedThread != null) { //First check to make sure thread created
+                            mConnectedThread.write("0");
+                            ledStateMessage.setText("LED가 켜졌습니다");
+                        }
                     } else {
-                        mConnectedThread.write("0");
-                        mLedStateMssage.setText("LED가 꺼졌습니다");
+                        mConnectedThread.write("-1");
+                        ledStateMessage.setText("LED가 꺼졌습니다");
+
                     }
                 }
             });
 
-            // 예약 버튼 클릭 시
             mLED2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mLED2.isChecked()) {
-                        String led_sec = mSec.getText().toString();
-                        mConnectedThread.write(led_sec);
-                    }
+                        String sec = mLedSec.getText().toString();
+//                        mConnectedThread.write(sec);
+//                        ledStateMessage.setText(sec + "초 후 LED가 꺼집니다");
+                        if (!sec.isEmpty()) {
+                            try {
+                                int seconds = Integer.parseInt(sec);
+                                mConnectedThread.write(sec); // mLedSec에 입력된 숫자 값을 전송
+                                ledStateMessage.setText(seconds + "초 후 LED가 꺼집니다.");
+
+                                CountDownTimer timer = new CountDownTimer(seconds * 1000, 1000) {
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+                                        int remainingSeconds = (int) (millisUntilFinished / 1000);
+                                        ledStateMessage.setText(remainingSeconds + "초 후 LED가 꺼집니다.");
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        mConnectedThread.write("0");
+                                        ledStateMessage.setText("LED가 꺼졌습니다.");
+                                    }
+                                };
+
+                                timer.start();
+                            } catch (NumberFormatException e) {
+                                // 유효하지 않은 숫자 예외 처리
+                                Toast.makeText(getApplicationContext(), "유효하지 않은 숫자입니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "숫자를 입력하세요.", Toast.LENGTH_SHORT).show();
+                        }
+
                 }
             });
-
-
 
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {

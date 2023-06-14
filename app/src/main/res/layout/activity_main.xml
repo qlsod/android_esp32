@@ -20,16 +20,6 @@
         android:text="LED Control"
         android:textStyle="bold" />
 
-    <CheckBox
-        android:id="@+id/checkbox_led_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:checked="false"
-        android:text="예약하기"
-        android:textSize="25sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -39,7 +29,6 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="22"
             android:gravity="center"
             android:textSize="25sp"
             android:textStyle="bold"
@@ -51,7 +40,71 @@
             android:textSize="25sp"
             android:textStyle="bold"
             />
+
+        <Button
+            android:id="@+id/btn_led_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.Button.Inset"
+            android:layout_marginLeft="20dp"
+            android:checked="false"
+            android:text="예약"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="LEDState:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/connect_message"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="0.9"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center"
+            android:text="LED 상내 메시지" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="Message:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/receivedMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="0.9"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center" />
+    </LinearLayout>
+
+
 
 
 
@@ -132,31 +185,7 @@
         android:layout_height="wrap_content"
         android:text="Discover New Devices" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="0.1"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="Message:"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/connect_message"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="0.9"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="center"
-            android:text="LED 상내 메시지" />
-    </LinearLayout>
 
     <ListView
         android:layout_marginTop="10dp"
