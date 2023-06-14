@@ -76,34 +76,19 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:gravity="center"
-            android:text="LED 상내 메시지" />
+            android:text="LED 상태 메시지" />
     </LinearLayout>
 
-    <LinearLayout
+
+
+    <TextView
+        android:id="@+id/receivedMessage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_weight="0.1"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="Message:"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/receivedMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="0.9"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="center" />
-    </LinearLayout>
-
+        android:layout_height="50dp"
+        android:text="난수표시"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center" />
 
 
 

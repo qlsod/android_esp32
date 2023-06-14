@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onFinish() {
-                                        mConnectedThread.write("0");
+                                        mConnectedThread.write("-1");
                                         ledStateMessage.setText("LED가 꺼졌습니다.");
                                     }
                                 };
