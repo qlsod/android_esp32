@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     readMessage = new String((byte[]) msg.obj, StandardCharsets.UTF_8);
                     mReadBuffer.setText(readMessage);
                     mReceive.setText(readMessage);
+
                 }
 
                 if(msg.what == CONNECTING_STATUS){
@@ -127,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v){
                     if (mLED1.isChecked()) {
-                        if (mConnectedThread != null) { //First check to make sure thread created
-                            mConnectedThread.write("0");
-                            ledStateMessage.setText("LED가 켜졌습니다");
-                        }
+                        mConnectedThread.write("0");
+                        ledStateMessage.setText("LED가 켜졌습니다");
+
                     } else {
                         mConnectedThread.write("-1");
                         ledStateMessage.setText("LED가 꺼졌습니다");
@@ -143,14 +143,15 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                         String sec = mLedSec.getText().toString();
-//                        mConnectedThread.write(sec);
-//                        ledStateMessage.setText(sec + "초 후 LED가 꺼집니다");
                         if (!sec.isEmpty()) {
                             try {
+
+                                // 입력된 숫자를 받아 mLedSec에 값을 전송
                                 int seconds = Integer.parseInt(sec);
-                                mConnectedThread.write(sec); // mLedSec에 입력된 숫자 값을 전송
+                                mConnectedThread.write(sec);
                                 ledStateMessage.setText(seconds + "초 후 LED가 꺼집니다.");
 
+                                // 시간을 카운트하여 남은 시간을 다시 mLedSec에 표시
                                 CountDownTimer timer = new CountDownTimer(seconds * 1000, 1000) {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
