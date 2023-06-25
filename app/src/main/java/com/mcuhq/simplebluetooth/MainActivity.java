@@ -78,10 +78,19 @@ public class MainActivity extends AppCompatActivity {
         mOffBtn = (Button)findViewById(R.id.off);
         mDiscoverBtn = (Button)findViewById(R.id.discover);
         mListPairedDevicesBtn = (Button)findViewById(R.id.paired_btn);
-        mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
+
+        // 사용자에게 입력받은 값을 ESP32에게 전달하기 위한 버튼 layoutId 연결
         mLED2 = (Button)findViewById(R.id.btn_led_2);
+
+        mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
+
+        // 사용자가 원하는 예약 시간을 입력 받을 수 있는 EditText layoutId 연결
         mLedSec = (EditText)findViewById(R.id.led_sec);
+
+        // ESP32와 연결된 LED의 상태를 표시할 수 있는 TextView layoutId 연결
         ledStateMessage = (TextView)findViewById(R.id.connect_message);
+
+        // ESP32가 보낸 난수를 표시하기 위한 TextView layoutId 연결
         mReceive = (TextView)findViewById(R.id.receivedMessage);
 
         mBTArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
@@ -101,8 +110,12 @@ public class MainActivity extends AppCompatActivity {
             public void handleMessage(Message msg){
                 if(msg.what == MESSAGE_READ){
                     String readMessage = null;
+
+                    // ESP가 보낸 난수를 읽어 readMessage에 저장
                     readMessage = new String((byte[]) msg.obj, StandardCharsets.UTF_8);
                     mReadBuffer.setText(readMessage);
+
+                    // 난수를 표시하기 위해 TextView의 text 변경
                     mReceive.setText(readMessage);
 
                 }
@@ -117,20 +130,22 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        // 어플과 ESP32와의 블루투스 연결상태 확인
         if (mBTArrayAdapter == null) {
-            // Device does not support Bluetooth
             mBluetoothStatus.setText(getString(R.string.sBTstaNF));
             Toast.makeText(getApplicationContext(),getString(R.string.sBTdevNF),Toast.LENGTH_SHORT).show();
         }
         else {
-
+            // LED Control 버튼 클릭할 경우
             mLED1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
+                    /* 체크박스가 체크된 경우 mConnectedThread에 정의 된 write 사용하여
+                       LED를 킬 수 있는 메시지인 "0"을 ESP32에게 전송 */
                     if (mLED1.isChecked()) {
                         mConnectedThread.write("0");
                         ledStateMessage.setText("LED가 켜졌습니다");
-
+                    /* 체크 해제 시 LED를 끌 수 있는 메시지인 "-1"을 ESP32에게 전송*/
                     } else {
                         mConnectedThread.write("-1");
                         ledStateMessage.setText("LED가 꺼졌습니다");
@@ -142,26 +157,26 @@ public class MainActivity extends AppCompatActivity {
             mLED2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                        // 사용자가 입력한 값을 String 형식으로 받아와 변수 sec에 저장
                         String sec = mLedSec.getText().toString();
+                        // 입력된 값이 존재할 경우
                         if (!sec.isEmpty()) {
                             try {
-
                                 // 입력된 숫자를 받아 mLedSec에 값을 전송
                                 int seconds = Integer.parseInt(sec);
                                 mConnectedThread.write(sec);
                                 ledStateMessage.setText(seconds + "초 후 LED가 꺼집니다.");
 
-                                // 시간을 카운트하여 남은 시간을 다시 mLedSec에 표시
+                                // 시간을 카운트하여 남은 시간을 다시 mLedSec에 표시, 1초마다 변경되어 표시
                                 CountDownTimer timer = new CountDownTimer(seconds * 1000, 1000) {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         int remainingSeconds = (int) (millisUntilFinished / 1000);
                                         ledStateMessage.setText(remainingSeconds + "초 후 LED가 꺼집니다.");
                                     }
-
+                                    // 예약 작업을 완료 시 LED를 끌 수 있도록 "-1" 전달
                                     @Override
                                     public void onFinish() {
-                                        mConnectedThread.write("-1");
                                         ledStateMessage.setText("LED가 꺼졌습니다.");
                                     }
                                 };
