@@ -68,6 +68,7 @@
             android:text="LEDState:"
             android:textStyle="bold" />
 
+<!--    ESP32에서 조작한 LED의 상태를 표시하기 위한 TextView-->
         <TextView
             android:id="@+id/connect_message"
             android:layout_width="wrap_content"

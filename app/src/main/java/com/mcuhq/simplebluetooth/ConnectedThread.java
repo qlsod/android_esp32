@@ -59,11 +59,6 @@ public class ConnectedThread extends Thread {
     /* Call this from the main activity to send data to the remote device */
     public void write(String input) {
         byte[] bytes = input.getBytes();           //converts entered String into bytes
-//        if (input.equals("켜기")) {
-//            bytes = "1".getBytes();
-//        } else if (input.equals("끄기")){
-//            bytes = "0".getBytes();
-//        }
         try {
             mmOutStream.write(bytes);
         } catch (IOException e) { }
